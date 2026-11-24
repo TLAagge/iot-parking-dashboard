@@ -168,8 +168,8 @@
                 latest.temperature_c.toFixed(1) + " °C";
 
             // Parking threshold:
-            // Less than 30 cm = vehicle detected
-            const occupied = latest.distance_cm < 30;
+            // Less than 10 cm = vehicle detected
+            const occupied = latest.distance_cm < 10;
 
             const statusElement =
                 document.getElementById("parkingStatus");
