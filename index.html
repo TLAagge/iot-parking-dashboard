@@ -1,1 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Parking Dashboard</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 24px;
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .occupied {
+            color: #dc2626;
+        }
+
+        .free {
+            color: #16a34a;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        canvas {
+            width: 100%;
+            height: 350px;
+        }
+
+        #status {
+            margin-top: 15px;
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>IoT Parking Dashboard</h1>
+    <p>Real-time parking sensor monitoring</p>
+</header>
+
+<main>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Parking status</h3>
+            <div id="parkingStatus" class="value">Loading...</div>
+        </div>
+
+        <div class="card">
+            <h3>Distance</h3>
+            <div id="distance" class="value">-- cm</div>
+        </div>
+
+        <div class="card">
+            <h3>Temperature</h3>
+            <div id="temperature" class="value">-- °C</div>
+        </div>
+
+    </div>
+
+    <div class="chart-container">
+        <h2>Distance measurements</h2>
+        <canvas id="distanceChart"></canvas>
+        <div id="status">Loading data...</div>
+    </div>
+
+</main>
+
+<script>
+
+    
+    const API_URL = "https://yvtgkpz5gtyjs5vipescsig7we0fnhxa.lambda-url.eu-north-1.on.aws/";
+
+    const canvas = document.getElementById("distanceChart");
+    const ctx = canvas.getContext("2d");
+
+    async function loadData() {
+
+        try {
+
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error("API request failed");
+            }
+
+            const data = await response.json();
+
+            if (data.length === 0) {
+                document.getElementById("status").textContent =
+                    "No measurements available.";
+                return;
+            }
+
+            // Newest measurement
+            const latest = data[0];
+
+            document.getElementById("distance").textContent =
+                latest.distance_cm.toFixed(2) + " cm";
+
+            document.getElementById("temperature").textContent =
+                latest.temperature_c.toFixed(1) + " °C";
+
+            // Parking threshold:
+            // Less than 30 cm = vehicle detected
+            const occupied = latest.distance_cm < 30;
+
+            const statusElement =
+                document.getElementById("parkingStatus");
+
+            if (occupied) {
+                statusElement.textContent = "Occupied";
+                statusElement.className = "value occupied";
+            } else {
+                statusElement.textContent = "Free";
+                statusElement.className = "value free";
+            }
+
+            drawChart(data);
+
+            document.getElementById("status").textContent =
+                "Showing the latest " + data.length +
+                " measurements.";
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("status").textContent =
+                "Could not load data from AWS.";
+
+        }
+    }
+
+
+    function drawChart(data) {
+
+        const width = canvas.clientWidth;
+        const height = 350;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const points = [...data].reverse();
+
+        const values = points.map(item => item.distance_cm);
+
+        const maxValue = Math.max(...values);
+        const minValue = Math.min(...values);
+
+        const padding = 45;
+
+        // Draw axes
+        ctx.beginPath();
+        ctx.moveTo(padding, 20);
+        ctx.lineTo(padding, height - padding);
+        ctx.lineTo(width - 20, height - padding);
+        ctx.stroke();
+
+        // Draw labels
+        ctx.fillStyle = "#64748b";
+        ctx.font = "12px Arial";
+
+        ctx.fillText(
+            maxValue.toFixed(0) + " cm",
+            5,
+            25
+        );
+
+        ctx.fillText(
+            minValue.toFixed(0) + " cm",
+            5,
+            height - padding
+        );
+
+        // Draw line
+        ctx.beginPath();
+
+        points.forEach((item, index) => {
+
+            const x =
+                padding +
+                index *
+                ((width - padding - 20) /
+                Math.max(points.length - 1, 1));
+
+            const normalized =
+                (item.distance_cm - minValue) /
+                Math.max(maxValue - minValue, 1);
+
+            const y =
+                height -
+                padding -
+                normalized *
+                (height - padding - 30);
+
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+
+        });
+
+        ctx.stroke();
+
+    }
+
+
+    // Load data immediately
+    loadData();
+
+    // Refresh every 10 seconds
+    setInterval(loadData, 10000);
+
+</script>
+
+</body>
+</html>
