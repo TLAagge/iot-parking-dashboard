@@ -92,8 +92,7 @@ float readDistance() {
 }
 
 float getSMHITemperature() {
-  // SMHI is HTTPS.
-  // For this school project we don't verify SMHI's certificate.
+  
   smhiClient.setInsecure();
 
   HTTPClient http;
@@ -120,8 +119,6 @@ float getSMHITemperature() {
   http.end();
 
   // Find the temperature value in the JSON response.
-  // Example:
-  // "value":[{"date":...,"value":"0.8","quality":"G"}]
 
   int valuePos = payload.indexOf("\"value\":\"");
 
@@ -180,7 +177,6 @@ void loop() {
   static unsigned long lastMessage = 0;
 
   // Update SMHI temperature once per minute.
-  // We don't need to request weather data every 5 seconds.
   if (millis() - lastWeatherFetch >= 60000) {
     lastWeatherFetch = millis();
 
