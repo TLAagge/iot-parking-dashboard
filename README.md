@@ -271,6 +271,9 @@ Sort key: timestamp
 
 DynamoDB används för att lagra historiska mätningar som senare kan hämtas av dashboardets API.
 
+<img width="610" height="202" alt="image" src="https://github.com/user-attachments/assets/b0270089-c36e-4559-80e1-d4a1c01c0919" />
+
+
 ---
 
 ## 8. Externt API – SMHI
