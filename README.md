@@ -380,18 +380,20 @@ samt ett diagram över tidigare avståndsmätningar.
 
 ## 12. Projektstruktur
 
-Exempel på struktur:
-
 ```text
 iot-parking-dashboard/
+│
+├── arduino/
+│   ├── ESP32-Parking-AWS.ino
+│   └── secrets.h
 │
 ├── index.html
 └── README.md
 ```
 
-ESP32-programmet utvecklas separat i Arduino IDE.
+`ESP32-Parking-AWS.ino` innehåller programmet för ESP32 och HC-SR04-sensorn.
 
-En lokal `secrets.h` används för uppgifter som inte ska publiceras i GitHub.
+`secrets.h` innehåller platshållare för Wi-Fi- och AWS-uppgifter. Vid lokal användning måste platshållarna ersättas med användarens egna uppgifter.
 
 ---
 
