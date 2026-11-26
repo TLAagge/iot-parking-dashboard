@@ -92,9 +92,15 @@ ESP32 fungerar som den lokala IoT-enheten och ansvarar för att:
 - publicera MQTT-meddelanden
 - hämta temperatur från SMHI
 
+<img width="640" height="640" alt="image" src="https://github.com/user-attachments/assets/7a974591-67b2-4d0b-b798-84152985a588" />
+
+
 ### HC-SR04
 
 HC-SR04 används för att mäta avståndet till ett fordon.
+
+<img width="350" height="202" alt="image" src="https://github.com/user-attachments/assets/5a11b711-b496-4e82-b857-e23614e3935b" />
+
 
 Anslutningar:
 
