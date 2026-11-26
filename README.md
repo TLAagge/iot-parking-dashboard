@@ -294,7 +294,7 @@ AWS IoT Core
 DynamoDB
 ```
 
-Temperaturen behövs inte för att avgöra om en parkeringsplats är upptagen. Den används som extern kontextuell data och för att uppfylla projektets krav på integration med ett externt API.
+SMHI, Sveriges meteorologiska och hydrologiska institut, tillhandahåller väderdata som jag hämtar via deras API.
 
 ---
 
