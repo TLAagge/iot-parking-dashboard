@@ -21,9 +21,6 @@ Systemet ska:
 
 ---
 
-## Färdigt Dashboard
-<img width="937" height="461" alt="image" src="https://github.com/user-attachments/assets/bd2926f0-fa6d-4385-9653-96c696e06daf" />
-
 
 ## 2. Arkitektur
 
@@ -373,6 +370,11 @@ Temperatur: 0.7 °C
 ```
 
 samt ett diagram över tidigare avståndsmätningar.
+
+## Dashboard
+
+<img width="955" height="444" alt="image" src="https://github.com/user-attachments/assets/ca1f40d3-b560-4ae5-913d-cd7d5d029541" />
+
 
 ---
 
