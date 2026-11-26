@@ -21,6 +21,10 @@ Systemet ska:
 
 ---
 
+## Färdigt Dashboard
+<img width="937" height="461" alt="image" src="https://github.com/user-attachments/assets/bd2926f0-fa6d-4385-9653-96c696e06daf" />
+
+
 ## 2. Arkitektur
 
 ```text
